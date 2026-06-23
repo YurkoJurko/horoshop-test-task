@@ -32,8 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 10, nullable: false)]
     #[Assert\NotBlank]
-    #[Assert\Length(max: 10)]
-    #[Assert\Regex(pattern: '/^\d+$/', message: 'Phone must contain only digits.')]
+    #[Assert\Regex(pattern: '/^\d{10}$/', message: 'Phone must contain exactly 10 digits.')]
     private string $phone;
 
     #[ORM\Column(length: 255, nullable: false)]
