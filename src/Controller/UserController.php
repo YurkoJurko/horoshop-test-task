@@ -86,7 +86,7 @@ class UserController extends AbstractController
             $this->entityManager->persist($user);
             $this->entityManager->flush();
         } catch (UniqueConstraintViolationException) {
-            return $this->error('Login or phone already exists.', Response::HTTP_BAD_REQUEST);
+            return $this->error('Login or phone already exists.', Response::HTTP_CONFLICT);
         }
 
         return $this->json([
