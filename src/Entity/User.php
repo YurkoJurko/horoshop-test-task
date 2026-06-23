@@ -45,7 +45,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column(type: Types::JSON, nullable: false)]
     #[Assert\NotNull]
-    private array $roles = [];
+    private array $roles = ['ROLE_USER'];
 
     /**
      * @var Collection<int, ApiToken>

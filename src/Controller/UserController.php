@@ -72,6 +72,7 @@ class UserController extends AbstractController
         $user = (new User())
             ->setLogin(trim($payload['login']))
             ->setPhone(trim($payload['phone']))
+            ->setRoles(['ROLE_USER'])
             ->setPasswordHash('');
 
         $user->setPasswordHash($this->passwordHasher->hashPassword($user, trim($payload['pass'])));
