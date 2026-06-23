@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ApiTokenRepository::class)]
 #[ORM\UniqueConstraint(name: 'uniq_api_token_token_hash', columns: ['token_hash'])]
-#[ORM\Index(name: 'idx_api_token_token_hash', columns: ['token_hash'])]
 class ApiToken
 {
     #[ORM\Id]
