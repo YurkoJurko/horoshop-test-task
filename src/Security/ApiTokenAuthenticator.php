@@ -13,8 +13,9 @@ use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
-class ApiTokenAuthenticator extends AbstractAuthenticator
+class ApiTokenAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface
 {
     public function __construct(
         private readonly ApiTokenRepository $apiTokenRepository,
@@ -24,12 +25,17 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
 
     public function supports(Request $request): ?bool
     {
-        return str_starts_with($request->headers->get('Authorization', ''), 'Bearer ');
+        return $request->headers->has('Authorization');
     }
 
     public function authenticate(Request $request): Passport
     {
         $authorization = $request->headers->get('Authorization', '');
+
+        if (!str_starts_with($authorization, 'Bearer ')) {
+            throw new AuthenticationException('Invalid authorization header.');
+        }
+
         $plainToken = trim(substr($authorization, 7));
 
         if ($plainToken === '') {
@@ -56,6 +62,11 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
+    {
+        return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
         return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
     }
